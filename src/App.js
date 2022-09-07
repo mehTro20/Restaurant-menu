@@ -5,7 +5,9 @@ function App() {
   const [inputName, setInputName] = useState("");
   const [inputIngredient, setInputIngredient] = useState("");
   const [inputPrice, setInputPrice] = useState("");
+  const [mutiblePrice, setMutiblePrice] = useState("");
   const [menu, setMenu] = useState([]);
+  // const [dishPrice, setDishPrice] = useState(menu.price);
 
   const inputNameHandler = (e) => {
     setInputName(e.target.value);
@@ -25,12 +27,28 @@ function App() {
         dish: inputName,
         ingredients: inputIngredient,
         price: inputPrice,
+        mutiblePrice: inputPrice,
         id: Math.random() * 1000,
       },
     ]);
+
     setInputName("");
     setInputIngredient("");
     setInputPrice("");
+    console.log(typeof menu[0].price);
+  };
+
+  const priceChange = (e, id) => {
+    let store = menu.map((item) => {
+      if (item.id === id) {
+        return {
+          ...item,
+          mutiblePrice: (Number(item.price) * Number(e.target.value)).toString(),
+        };
+      }
+      return item;
+    });
+    return setMenu(store);
   };
 
   return (
@@ -62,7 +80,7 @@ function App() {
         <label>
           Price:
           <input
-            type={"text"}
+            type={"number"}
             onChange={inputPriceHandler}
             className="price"
             value={inputPrice}
@@ -75,11 +93,19 @@ function App() {
 
       <div className="display-area">
         <h3>Menu</h3>
-        {menu.map((food) => (
+        {menu.map((food, i) => (
           <div className="food" key={food.id}>
             <h4>{food.dish}</h4>
             <h5>{food.ingredients}</h5>
-            <h6>{food.price}</h6>
+            <h6>{food.mutiblePrice}</h6>
+            <label>
+              How much would you like?
+              <input
+                type={"number"}
+                onChange={(e) => priceChange(e, food.id)}
+                placeholder={1}
+              />
+            </label>
           </div>
         ))}
       </div>
